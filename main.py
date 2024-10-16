@@ -1,7 +1,6 @@
 import re
 import time
 import json
-import random
 import sqlite3
 import urllib3
 import argparse
@@ -14,6 +13,7 @@ from urllib3 import Timeout, Retry
 from urllib3.contrib.socks import SOCKSProxyManager
 from flask import Flask, render_template, url_for, request, Response
 from multiprocessing import Pool, freeze_support, Manager
+import secrets
 
 app = Flask(__name__)
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
@@ -202,7 +202,7 @@ def connector(url):
 
 def header_gen():
     header = {
-        'User-agent': random.choice(ua),
+        'User-agent': secrets.choice(ua),
         'Accept-Encoding': 'gzip, deflate',
         'Accept': '*/*',
         'Connection': 'keep-alive'}
@@ -212,7 +212,7 @@ def header_gen():
             http = SOCKSProxyManager("socks5h://127.0.0.1:9050", headers=header, cert_reqs=False, num_pools=30)
         elif args.proxy:
             if len(proxy_list) >= 1:
-                http = SOCKSProxyManager("socks5h://" + str(random.choice(proxy_list)), headers=header, cert_reqs=False,
+                http = SOCKSProxyManager("socks5h://" + str(secrets.choice(proxy_list)), headers=header, cert_reqs=False,
                                          num_pools=30)
         else:
             http = urllib3.PoolManager(headers=header, cert_reqs=False, num_pools=30)
